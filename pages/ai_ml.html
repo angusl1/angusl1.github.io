@@ -6,7 +6,7 @@
 -->
 <html>
 <head>
-	<title>Self Driving Simulated Car - Angus Li</title>
+	<title>Self Driving Simulated Robot</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<link rel="stylesheet" href="../assets/css/main.css" />
@@ -49,19 +49,54 @@
 		<!-- Main -->
 		<div id="main">
 			<div class="inner">
-				<h1>Contact</h1>
+				<h1>ENPH353 Autonomous Detective Project</h1>
+				<p style="color:red;"><b>Note: This page is in progress as I continue through the course.</b></p>
 				<p>
-					For any inquiries please contact me via email and feel free to connect with me on LinkedIn. <br />
-					Email: anguslixd@gmail.com
+					This page documents my journey and learning through ENPH353, a project course where we learn about computer vision, image matching algorithms, neural networks, and reinforcement learning with the goal of
+					programming a simulated autonomous detective to see a simulated environment and perform various tasks to solve a mystery. Oh, it's a competition too. We have to complete as many tasks as quickly as possible
+					while competing against our peers. The format of the course involves weekly labs with a code review session, then a few weeks working on the competition using the knowledge we got from the weekly labs.
+					This is a link to the competition document.
 				</p>
-				<section>
-					<ul class="icons">
-						<li><a href="https://www.linkedin.com/in/angusl1/" class="icon brands style2 fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
-						<li><a href="mailto:anguslixd@gmail.com" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
-					</ul>
-				</section>
-
-
+				<p>
+					The course uses Linux since it allows for us to have more control over the system and run a few programs exclusive to Linux, such as ROS. We also used the terminal a lot. Since this course dives pretty in-depth into a lot of different
+					technologies very quickly, and has a significant focus on artificial intelligence and machine learning, we were permitted and encouraged to use AI tools such as ChatGPT and GitHub Copilot. To make sure we
+					are understanding the code that these tools spit out, we also have code review with various instructors where we review each lab's code.
+				</p>
+				<h2>Computer Vision and Line Following in ROS</h2>
+				<p>
+					This lab project came in two parts and two labs. In the first, we set up the line following algorithm in python using OpenCV and a provided video. In the second lab, we setup the ROS environment then added our
+					line tracking code and PID code to control the robot based off where the line is. The result is this: a robot simulated in ROS which can track and follow a path from an image.
+				</p>
+				<p>
+					<div class="image right"><img src="../images/opencv_frame.png" alt="processed frame" /><figcaption>A frame processed by the code </figcaption></div>
+					The first lab was spent reading about OpenCV, writing some skeleton code based on a given example, then fixing it to draw a circle on the path in each frame. The algorithm is relatively simple once I found out
+					the functions I needed to implement it: downscale the image to speed up the processing, convert the image to grayscale and blur it, then find the edges. Then we can find the center of the two edges, which should be the center of the path and draw a circle on it.
+					By processing each frame of the given video and saving it to a new video, we got this. Note that when there are no edges detected, the center defaults to the bottom left corner. I fixed it before the next lab to be
+					in the last known location of the path center. <br /><br /><br />
+				</p>
+				<p align="center">
+					<video width="320" controls autoplay>
+						<source src="../images/processed_video_feed.mp4" type="video/mp4">
+						<figcaption>The processed video output</figcaption>
+					</video>
+				</p>
+				<p>
+					In the second lab, we started by setting up our ROS environment. My understanding is that ROS is a compilation of software and tools which allows us to build and simulate robots, and for this lab we would simulate a robot
+					and then control it. I spent a lot of time fiddling around in the terminal setting up my ROS environment where I managed to launch a robotless environment with only an image as a track. After, I launched the given robot and added camera
+					and control plugins so we could get information from the robot camera link and control it later. Now, I had this useless robot which didn't do anything, so I had to write a python script to get it going. 
+				</p>
+				<p>
+					This was the fun part of the lab for me. I started by copying some example code which uses the ROS Publisher and Subscriber model and modified to my needs. This meant subscribing to the simulated robot camera feed, and publishing to
+					the control module of the robot. I added the path tracking code from the first lab to process the camera input, and used the calculated path center to see how far from the center of the path we were. Then I wrote some really simple PID
+					code (well I only used P) to steer the robot left or right depending on the error, and used OpenCV to show the processed frame for debugging. By setting up this environment, we will be able to follow the track in the competition. 
+				</p>
+				<h2>GUI and Image Recognition</h2>
+				<p>
+					In this lab, we set up a basic GUI and used the SIFT algorithm to compare an image to my webcam feed. The final goal was to use homography to draw a bounding box around the similar image in the webcam feed if there was a similar image,
+					and draw lines between similar points if there was no similar image. We were provided with skeleton code to connect our Python script to the GUI so we would have camera functionality and be able to select a picture. 
+					After, I followed this <link><a href="https://pysource.com/2018/06/05/object-tracking-using-homography-opencv-3-4-with-python-3-tutorial-34/" target="_blank">guide on implementing homography by Sergio Canu</a> and cleaned up
+					his code. The purpose of this lab is to get somewhat familiar with using computer vision and SIFT to recognize similar images for use in the competition.
+				</p>
 			</div>
 		</div>
 
