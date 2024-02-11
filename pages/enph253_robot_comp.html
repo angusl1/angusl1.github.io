@@ -50,8 +50,9 @@
 		<div id="main">
 			<div class="inner">
 				<h1>Henrietta Ford</h1>
+				<div><span class="image fit"><img src="../images/p3.jpg" alt="" /><figcaption>Henrietta Ford, our entry to the 2023 ENPH Robot Summer Competition</figcaption></span></div>
 				<p>
-					In the summer of 2023, myself and three of my Engineering Physics friends took on the legendary annual EngPhys Robot Summer competition. Over the course of 12 weeks, teams would 
+					In the summer of 2023, myself and three of my Engineering Physics friends took on the legendary annual EngPhys Robot Summer competition. Over the course of 12 weeks, teams would
 					design and fabricate an autonomous robot to compete in a brand new competition devised by our program's instructors. We took 5 courses in the first 6 weeks while learning
 					about key robot design concepts and considerations, then spent the last 6 weeks prototyping, fabricating, and tuning our robot. It was a lot of fun, work, and here is how our team
 					was able to earn 3rd place.
@@ -64,21 +65,154 @@
 				</p>
 				<h3>Competition Overview</h3>
 				<p>
-					This year's robot competition was relatively simple with a couple obstacles and twists to make the competition more challenging for us such as a zipline, rocky obstacles, and an IR beacon shortcut. 
-					Teams would have 2 minutes to score as many points as possible by completing full laps (3 points per) and picking up coin blocks (1 point per). 
-					Teams could also lose points and be reset to the start by picking up a magnetic bomb block. 
-					Width of the robots were limited by an archway on the track, but could be bypassed by taking the IR beacon shortcut across a rocky obstacle. 
+					This year's robot competition was relatively simple with a couple obstacles and twists to make the competition more challenging for us such as a zipline, rocky obstacles, and an IR beacon shortcut.
+					Teams would have 2 minutes to score as many points as possible by completing full laps (3 points per) and picking up coin blocks (1 point per).
+					Teams could also lose points and be reset to the start by picking up a magnetic bomb block.
+					Width of the robots were limited by an archway on the track, but could be bypassed by taking the IR beacon shortcut across a rocky obstacle.
 				</p>
 				<h3>Strategy</h3>
 				<p>
-					The first thing our team looked at before designing our robot was the strategy that we would use. All of the teams believed that focus on completing laps was more valuable than 
-					collecting blocks for a few reasons. The value of blocks was less than the value of a lap, the number of blocks you could collect was artificially limited by the number of blocks on the course,
+					<div class="image left"><img src="../images/track_strategy.png" alt="Competition Surface and Strategy" /><figcaption>Our initial strategy</figcaption></div>
+					The first thing our team looked at before designing our robot was the strategy that we would use. All of the teams believed that focus on completing laps was more valuable than
+					collecting blocks since the value of blocks was a third of the value of a lap, the number of blocks you could collect was artificially limited by the number of blocks on the course,
 					and if a team got ahead at the junction they could push all of the blocks away from the tape line making it more difficult to collect them. Teams had a few unique options to complete laps
-					such as taking a shortcut with the IR beacon, taking the zipline and skipping a third of the course, and jumping off the bridge to skip part of the course as well. 
+					such as taking a shortcut with the IR beacon, taking the zipline and skipping a third of the course, and jumping off the bridge to skip part of the course as well.
 				</p>
 				<p>
-					We decided to forego these unique options and focus on completing laps quickly by following the tape. 
+					We decided to forego these unique options and focus on completing laps quickly by following the tape while picking up a few blocks as we went by. We also initially intended to
+					use the IR beacon to take the shortcut, but as the track developed we figured the rocks over the shortcut would require larger wheels which would reduce our turning responsiveness.
+					The decision was that the value of having a fast, nimble robot was higher than being able to take the shortcut.
 				</p>
+				<h1>Design</h1>
+				<p>
+					Our robot ended up with a few main design requirements. First and foremost, we focused on fast tape following so we could obtain as many points as possible for finishing laps.
+					We also aimed for our robot to have a smooth pickup mechanism which could pickup blocks without the robot going out of its way. Combined with our hopefully fast robot, this
+					should allow us to get ahead of the competition and get access to all the blocks before they could pick them up or knock them away. We were also required by the competition rules
+					have a bumper and collision detection, as two robots getting stuck together would result in a restart where both robots lost all their hard earned laps.
+				</p>
+				<h3>Chassis</h3>
+				<p>
+					We decided to have a preliminary brainstorming session about what our robot would look like and do, and more importantly how it would do that. After a few whiteboard sessions, we
+					moved to CAD with our rear-engine, rear-wheel-drive <s>car</s> robot. A servo and perpendicular arm with two thrust blocks would steer the robot, while a pair of motors in the back
+					would propel it forwards. We decided to place the reflectance sensors on the turning arm so they would move with the turning arm simplifying our PID code, and the all of the electrical
+					components went in the back so we had a space to store blocks from our envisioned sideloading mechanism. Initially we wanted to connect our bumper to some buttons or a switch
+					for collision detection, but we ended up with a better solution.
+				</p>
+				<div><span class="image fit"><img src="../images/cadchassis.png" alt="" /><figcaption>First CAD model of the Chassis, created by my teammates. I've been procrastinating CAD learning forever...</figcaption></span></div>
+				<h3>Electrical</h3>
+				<p>
+					To begin our electrical design, we brainstormed all of the circuits we would need along with their power requirements. This is what we came up with initially. While this
+					list would continue to evolve as we continued to add new fun features or come across problems, it was pretty close to what we ended up with. It was important for us to
+					create our distance, bomb, and collision detection circuits so we could hit the ground running when it was time for fabrication in the project lab.
+				</p>
+				<div><span class="image fit"><img src="../images/collision_detection_schematic.png" alt="" /><figcaption>Schematic of our collision detection circuit with switches</figcaption></span></div>
+				<h3>Software</h3>
+				<p>
+					<div class="image fit"><img src="../images/sw_design_flowchart.png" alt="Initial Software Flowchart" /><figcaption>Initial Software Flowchart</figcaption></div>
+					Our software was an important part of our robot since it dictated how well our robot would be able to navigate turns and finish laps. We started the design with a flowchart
+					of the behaviors we needed to be implemented before transforming it into psuedocode and then actual code. We used PID control to regulate the speed and direction of the robot's
+					wheels based on the current and past readings of the reflectance sensor. We elected for six reflectance sensors so we could have more information to work with.
+				</p>
+				<h3>Project Planning and Risk Analysis</h3>
+				<p>
+					This was one of my main areas of focus for initial design, along with electrical. I think there is a lot of value in planning out a project by creating a timeline, looking at potential
+					risks and roadblocks, and generally aligning your team so everyone is on the same page. We created a risk matrix to determine areas which could bottleneck our fabrication process or
+					hurt our robot performance and then supplemented it with a flowchart of tasks we needed to finish to achieve a working robot. This planning allowed us to spend less time in the lab when
+					we were already on track, and get a better grasp of how much time we had left.
+				</p>
+				<div class="col-12"><span class="image fit"><img src="../images/flowchart.png" alt="" /></span></div>
+				<div class="col-12"><span class="image fit"><img src="../images/planning_flowchart.png" alt="" /></span></div>
+				<h1>Fabrication</h1>
+				<p>
+					Before the fabrication process started, we decided to individually focus on parts of the process to avoid overwhelming ourselves. I focused on the electrical parts with my teammate Gabe, and ended up assisting with
+					mechanical design as the fabrication process evolved while the other two teammates. We elected to avoid working on software for the robot since there would be nothing to test it with until we had an initial prototype.
+					The previous soldering experience I had from soldering keyboard switches as a hobby helped me get a head start on the H-Bridge module.
+				</p>
+				<h3>Electrical</h3>
+				<p>
+					<div class="image right"><img src="../images/hbridge_schematic.png" alt="Schematic of H-Bridge" /><figcaption>Schematic for H-Bridge Circuit</figcaption></div>
+					The first circuit I built was an rough version of an H-Bridge, which sends a <link><a href="https://en.wikipedia.org/wiki/Pulse-width_modulation" target="_blank">PWM signal</a> to the motors depending on microcontroller inputs. While we
+					could power the motors with DC power, we needed to control the robot by modifying the motor speed or running them in reverse. That was the purpose of the H-bridge, to allow us to change the PWM outputs using DC inputs.
+					The plan was to build the circuits by hand initially to run the prototype robot and test for functionality, then design PCBs and have them printed for the final robot. While my rushed design let us get something moving
+					quickly, it also caused issues when a MOSFET died and I had to diagnose the problem then desolder and resolder a MOSFET which got fried. We ended up not using this board for the final competition since I got
+					working H-Bridge PCBs printed and soldered which had a smaller footprint and were easier to diagnose issues with. We used another H-Bridge to eventually power our block-collection motors as well since we needed to
+					stop and reverse the motors for bombs.
+				</p>
+				<p>
+					<div class="image right"><img src="../images/reflectance_schematic.png" alt="Schematic of Reflectance Sensor Circuit. We built 6 of these." /><figcaption>Schematic for Reflectance Circuit</figcaption></div>
+					The circuit for our six reflectance sensor setup was pretty simple. We used a comparator for each sensor, which would compare the output of the sensor with a voltage we set using a potentiometer. To tune the sensors, we
+					would simply change the resistance and voltage output of the potentiometer to increase or reduce the threshold of reflected light to activate the sensor. This meant that we received digital inputs into the STM32
+					microcontroller for whether the sensors were reading black or not. The other approach was to provide analog inputs into the microcontroller, but due to the limited microcontroller pins which could take
+					analog inputs we wanted to save those for more necessary applications.
+				</p>
+				<p>
+					Some of the other circuits we made included a hall effect sensor board for detecting the bombs as we drove past them, a power distribution board to connect our battery power with all of the other circuit boards, and
+					a microcontroller board with JST connectors for all the inputs and outputs. There was also a switch at the bottom of the robot to detect the top and bottom of the ramps so we could change our motor speed and software settings
+					based on the robot location, and a distance sensor so we could detect robots and obstacles in front of our robot. Some of these were more involved than others, but one of the main things I learned from this process was how
+					electrical noise could affect our more sensitive circuits, especially the microcontroller. We had to place the H-Bridge circuits away from the microcontroller, twist the wires, and reroute them multiple times to avoid issues with turning.
+					<span class="image fit">
+						<img src="../images/ford_top.jpg" alt="" /><figcaption>
+							Key circuits on prototype chassis 3 weeks from competition. Note the reflectance comparator circuit on the left, H-Bridge on the right, and various power and
+							power converter boards on the top.
+						</figcaption>
+					</span>
+				</p>
+				<h3>Chassis and Mechanical Elements</h3>
+				<p>
+					<div class="image right"><img src="../images/p1.jpg" alt="Initial Working Prototype" /><figcaption>Our initial working prototype. Note the motors under the chassis floor. </figcaption></div>
+					We went with the initial chassis design, but with a second "roof" layer to place the PCBs on since we forgot to include room for the motors in the initial CAD. I learned to use the laser cutter to cut parts from CAD templates so I could
+					help with the fabrication process when my teammates were busy or unavailable. We cut the initial chassis for the first iterations out of hardboard and switched to POM once we had a finalized design to make Henrietta sturdier and reduce
+					the cost of materials for the project lab. However, the POM was heavier and put too much stress on our servo for steering so we switched back to hardboard with holes to reduce the final weight of the robot.
+					Other changes we made from the initial prototype was adding a second layer to the back of the robot to put our circuit boards on, and switching the posts to nuts and bolts. I spent way too much time unscrewing those nuts.
+					One of the issues we encountered here was having our crossbar break when the robot was tape following, so we changed the material from hardboard to a thicker acrylic which would hopefully not snap. <br /><br />
+				</p>
+				<p>
+					The block collection system we used with a sideloading motor with "sausages" knocking the blocks into the hole in the chassis. We put one on each side, and the blocks were kept in the robot by the motor continuously spinning.
+					This worked really well, allowed us to collect blocks while following the track normally, and looked really cool on the robot. My teammates added a compartment for our batteries, and a beautiful football helmet bumper with some
+					paintbrush bristles to push away the paper which other robots could drop.
+					<div class="image fit"><img src="../images/p2.jpg" alt="Near Finished Prototype" /><figcaption>Robot ~1 week from competition. Missing bomb sensors, battery compartment, and the final reshaped bumper. </figcaption></div>
+				</p>
+				<h1>Competition</h1>
+				<p>
+					In the 48 hours before the competition, we felt great. Barely worked on the robot, mostly ran it for fun, and worked out all of the kinks in preparation for the competition. The night before the competition, the competition surface was moved
+					into the location of the competition from the lab. We had to retune the robot for the new darker lighting. Here is the robot running some laps before the competition. Youtube limits clips to one minute, but there is another minute of the robot
+					doing laps after this. Oh right, we figured out we can cut the initial corner and start the robot with our distance sensor because it was more visually impressive than flicking a switch.
+					<link /><a href="https://youtu.be/arVchG8LxmI?t=20639" target="_blank">Check out the full run from the pre-competition livestream here.</a> <br />
+				</p>
+				<p align="center">
+					<iframe width="560" height="315" src="https://www.youtube.com/embed/arVchG8LxmI?si=rHtVB9TP-7jbloY1&amp;clip=UgkxtDcZQxVw81WOCfkrhEMaAXl3c7s-sAIK&amp;clipt=EIDi6wkY4LbvCQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+				</p>
+				<p>
+					There were a few issues on competition day, mostly regarding the reflectance sensors. First, the lighting of the room changed between our last test run the night before, and the actual competition itself. Our robot had some issues with staying
+					on the track and nearly went off the surface or got lost a few times. Even with these issues, we were able to progress to the knockout stage with a bit of reflectance sensor tuning. We made it past quarterfinals, but lost in semifinals sending us
+					to the lower finals. In the semifinal round, Henrietta refused to follow the line following a minor collision with the other robot where they got entangled. Unfortunately for us, the reflectance sensors were knocked slightly off the bar when
+					we untangled them, causing her to have trouble reading and following the tape. We fixed this issue for the lower finals and managed to achieve third.
+				</p>
+				<p>
+					<b><link /><a href="https://youtu.be/gXMnazr8vEo?t=3753" target="_blank">First competition run in Swiss. </a></b><br />
+					<b><link /><a href="https://youtu.be/gXMnazr8vEo?t=4619" target="_blank">Second competition run in Swiss. </a></b><br />
+					<b><link /><a href="https://youtu.be/gXMnazr8vEo?t=6298" target="_blank">Quarterfinals</a></b><br />
+					<b><link /><a href="https://youtu.be/gXMnazr8vEo?t=6833" target="_blank">Semifinals. Very intense run.</a></b><br />
+					<b><link /><a href="https://youtu.be/gXMnazr8vEo?t=7153" target="_blank">Lower Finals</a></b><br />
+				</p>
+				<h1>Results and Reflection</h1>
+				<p>
+					Overall, we finished <b>third</b> in the competition. It was a bittersweet competition ending for us, we were happy we did well but felt that Henrietta had much potential. However, the more important part was what we learned. I learned a lot about
+					building and debugging circuits, electrical noise, laser cutting, hand tools, prototyping and design, project planning, and more. It was a lot of work, essentially 10 hours in the lab, 5 days a week upped to 7 days a week closer to the end of the competition
+					but I learned a lot.
+				</p>
+				<p>
+					I would like to credit and thank my teammates Chayce Ross, Rhiannon Evans, and Gabriel Ravacci for being wonderful, hardworking, and patient people who were a pleasure to work with. They also provided some of the photos
+					for this. The TAs were there for us throughout the fabrication period, helping to fill in the gaps in our knowledge and assist us with problems we struggled with. The ENPH staff shared their immense experience and knowledge 
+					with us through their reviews and insights, and supported us throughout the process. I would also like to stay that our fellow competitors/peers/extra teammates were great people to discuss ideas with, and they were all 
+					very friendly and sportsmanlike. 
+				</p>
+				<h3>Passing</h3>
+				<p>
+					Unfortunately, Henrietta Ford passed away on November 4th, 2023 at the UBC Engineering Open House where she was being showcased by our team on behalf of Engineering Physics. She read a crack between two tables as the tape, and fell off the table in front
+					of a group of spectators where she could not be caught. She suffered a broken hip (chassis), but now she is cryogenically frozen in the lab to be cannibalized by the next cohort of Engineering Physics students or revived when we print a new chassis for her.
+				</p>
+
 
 
 			</div>
