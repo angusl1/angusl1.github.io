@@ -83,20 +83,48 @@
 				<p>
 					In the second lab, we started by setting up our ROS environment. My understanding is that ROS is a compilation of software and tools which allows us to build and simulate robots, and for this lab we would simulate a robot
 					and then control it. I spent a lot of time fiddling around in the terminal setting up my ROS environment where I managed to launch a robotless environment with only an image as a track. After, I launched the given robot and added camera
-					and control plugins so we could get information from the robot camera link and control it later. Now, I had this useless robot which didn't do anything, so I had to write a python script to get it going. 
+					and control plugins so we could get information from the robot camera link and control it later. Now, I had this useless robot which didn't do anything, so I had to write a python script to get it going.
 				</p>
 				<p>
 					This was the fun part of the lab for me. I started by copying some example code which uses the ROS Publisher and Subscriber model and modified to my needs. This meant subscribing to the simulated robot camera feed, and publishing to
 					the control module of the robot. I added the path tracking code from the first lab to process the camera input, and used the calculated path center to see how far from the center of the path we were. Then I wrote some really simple PID
-					code (well I only used P) to steer the robot left or right depending on the error, and used OpenCV to show the processed frame for debugging. By setting up this environment, we will be able to follow the track in the competition. 
+					code (well I only used P) to steer the robot left or right depending on the error, and used OpenCV to show the processed frame for debugging. By setting up this environment, we will be able to follow the track in the competition.
 				</p>
 				<h2>GUI and Image Recognition</h2>
 				<p>
 					In this lab, we set up a basic GUI and used the SIFT algorithm to compare an image to my webcam feed. The final goal was to use homography to draw a bounding box around the similar image in the webcam feed if there was a similar image,
-					and draw lines between similar points if there was no similar image. We were provided with skeleton code to connect our Python script to the GUI so we would have camera functionality and be able to select a picture. 
+					and draw lines between similar points if there was no similar image. We were provided with skeleton code to connect our Python script to the GUI so we would have camera functionality and be able to select a picture.
 					After, I followed this <link><a href="https://pysource.com/2018/06/05/object-tracking-using-homography-opencv-3-4-with-python-3-tutorial-34/" target="_blank">guide on implementing homography by Sergio Canu</a> and cleaned up
 					his code. The purpose of this lab is to get somewhat familiar with using computer vision and SIFT to recognize similar images for use in the competition.
 				</p>
+				<h2>Convolutional Neural Network (CNN) for License Plate Reading</h2>
+				<p>
+					We also learned about convolutional neural networks, and implemented our own classification model which would read license plates and classify the characters. I personally used Google Colab, Python, and Tensorflow to create my model.
+					You can see the model specifications, an example of the model predicting the character in the image, along with a confusion matrix heatmap which allows us to see what the model still gets confused about. If I had some more time,
+					I would use this confusion matrix to see how I can improve my dataset and model.
+				</p>
+				<div class="box alt">
+					<div class="row gtr-uniform">
+						<div class="col-4">
+							<span class="image fit">
+								<img src="../images/353_cnn_model.png" alt="My model's specifications" />
+								<figcaption> CNN Model Specifications </figcaption>
+							</span>
+						</div>
+						<div class="col-4">
+							<span class="image fit">
+								<img src="../images/353_cnn_example.png" alt="Predicting '8'" />
+								<figcaption>CNN Prediction</figcaption>
+							</span>
+						</div>
+						<div class="col-4">
+							<span class="image fit">
+								<img src="../images/353_confusion_matrix.png" alt="Heatmap" />
+								<figcaption> Confusion matrix showing prediction accuracy </figcaption>
+							</span>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
