@@ -55,53 +55,46 @@
 					This page documents my journey and learning through ENPH353, a project course where we learn about computer vision, image matching algorithms, neural networks, and reinforcement learning with the goal of
 					programming a simulated autonomous detective to see a simulated environment and perform various tasks to solve a mystery. Oh, it's a competition too. We have to complete as many tasks as quickly as possible
 					while competing against our peers. The format of the course involves weekly labs with a code review session, then a few weeks working on the competition using the knowledge we got from the weekly labs.
-					This is a link to the competition document.
 				</p>
 				<p>
 					The course uses Linux since it allows for us to have more control over the system and run a few programs exclusive to Linux, such as ROS. We also used the terminal a lot. Since this course dives pretty in-depth into a lot of different
 					technologies very quickly, and has a significant focus on artificial intelligence and machine learning, we were permitted and encouraged to use AI tools such as ChatGPT and GitHub Copilot. To make sure we
 					are understanding the code that these tools spit out, we also have code review with various instructors where we review each lab's code.
 				</p>
-				<h2>Computer Vision and Line Following in ROS</h2>
+				<h2>Learning Concepts</h2>
 				<p>
-					This lab project came in two parts and two labs. In the first, we set up the line following algorithm in python using OpenCV and a provided video. In the second lab, we setup the ROS environment then added our
-					line tracking code and PID code to control the robot based off where the line is. The result is this: a robot simulated in ROS which can track and follow a path from an image.
-				</p>
+					The first 10 weeks of the course were based around learning about various machine learning and artificial intelligence concepts through separate labs. All of these concepts would end up being useful for our final competition. 
+				<h3>Computer Vision</h3>
 				<p>
 					<div class="image right"><img src="../images/opencv_frame.png" alt="processed frame" /><figcaption>A frame processed by the code </figcaption></div>
 					The first lab was spent reading about OpenCV, writing some skeleton code based on a given example, then fixing it to draw a circle on the path in each frame. The algorithm is relatively simple once I found out
 					the functions I needed to implement it: downscale the image to speed up the processing, convert the image to grayscale and blur it, then find the edges. Then we can find the center of the two edges, which should be the center of the path and draw a circle on it.
 					By processing each frame of the given video and saving it to a new video, we got this. Note that when there are no edges detected, the center defaults to the bottom left corner. I fixed it before the next lab to be
-					in the last known location of the path center. <br /><br /><br />
-				</p>
-				<p align="center">
-					<video width="320" controls autoplay>
-						<source src="../images/processed_video_feed.mp4" type="video/mp4">
-						<figcaption>The processed video output</figcaption>
-					</video>
+					in the last known location of the path center. My lab partner used a slightly modified approach which we used for the competition, HSV masking. By masking for the <link><a href="https://en.wikipedia.org/wiki/HSL_and_HSV" target="_blank">Hue, Saturation, and Value (brightness)</a>
+					values, we could mask for certain colour ranges. In this scenario it was easy to just mask the path color, and by finding the centroid of the masked object it was pretty simple to find the centre to follow. 
 				</p>
 				<p>
-					In the second lab, we started by setting up our ROS environment. My understanding is that ROS is a compilation of software and tools which allows us to build and simulate robots, and for this lab we would simulate a robot
+					Another computer vision technique we did a lab on was SIFT (Scale-Invariant Feature Transform). By generating a set of feature keypoints described by vectors for a given image, objects can be identified by comparing keypoints and description vectors. 
+					That was an oversimplified explanation of how SIFT works, <link><a href="https://www.cs.ubc.ca/~lowe/papers/ijcv04.pdf" target="_blank">the creator Dr. David G. Lowe published a paper which you can read here</a>. The lab I worked on here was a simple GUI and Python script
+					which the camera feed was compared with uploaded images. When a similar object was identified in the camera output, a bounding box was drawn. SIFT could have been applied to our competition project by detecting clueboards or other objects on the path, but we chose to go for another
+					approach to solve these problems. 
+				<h3>ROS (Robot Operating System)</h3>
+				<p>
+					In the second lab, we started by setting up our ROS environment. ROS is a compilation of software and tools which allows us to build and simulate robots, and for this lab we would simulate a robot
 					and then control it. I spent a lot of time fiddling around in the terminal setting up my ROS environment where I managed to launch a robotless environment with only an image as a track. After, I launched the given robot and added camera
 					and control plugins so we could get information from the robot camera link and control it later. Now, I had this useless robot which didn't do anything, so I had to write a python script to get it going.
-				</p>
-				<p>
+					<br /><br />
 					This was the fun part of the lab for me. I started by copying some example code which uses the ROS Publisher and Subscriber model and modified to my needs. This meant subscribing to the simulated robot camera feed, and publishing to
 					the control module of the robot. I added the path tracking code from the first lab to process the camera input, and used the calculated path center to see how far from the center of the path we were. Then I wrote some really simple PID
 					code (well I only used P) to steer the robot left or right depending on the error, and used OpenCV to show the processed frame for debugging. By setting up this environment, we will be able to follow the track in the competition.
 				</p>
-				<h2>GUI and Image Recognition</h2>
+				<h2>Convolutional Neural Network (CNN) for Character Recognition</h2>
 				<p>
-					In this lab, we set up a basic GUI and used the SIFT algorithm to compare an image to my webcam feed. The final goal was to use homography to draw a bounding box around the similar image in the webcam feed if there was a similar image,
-					and draw lines between similar points if there was no similar image. We were provided with skeleton code to connect our Python script to the GUI so we would have camera functionality and be able to select a picture.
-					After, I followed this <link><a href="https://pysource.com/2018/06/05/object-tracking-using-homography-opencv-3-4-with-python-3-tutorial-34/" target="_blank">guide on implementing homography by Sergio Canu</a> and cleaned up
-					his code. The purpose of this lab is to get somewhat familiar with using computer vision and SIFT to recognize similar images for use in the competition.
-				</p>
-				<h2>Convolutional Neural Network (CNN) for License Plate Reading</h2>
-				<p>
-					We also learned about convolutional neural networks, and implemented our own classification model which would read license plates and classify the characters. I personally used Google Colab, Python, and Tensorflow to create my model.
-					You can see the model specifications, an example of the model predicting the character in the image, along with a confusion matrix heatmap which allows us to see what the model still gets confused about. If I had some more time,
-					I would use this confusion matrix to see how I can improve my dataset and model.
+					We also learned about convolutional neural networks, and implemented our own classification model which would read license plates and classify the characters. I used Google Colab, Python, and Tensorflow to create my model.
+					You can see the model specifications, an example of the model predicting the character in the image, along with a confusion matrix heatmap which allows us to see what the model still gets confused about. The most interesting portion of this activity
+					was seeing how the training would be affected based on the training data which we gave it. We found that training on more images for longer (more epochs) was better up until a point, at which overfitting became an issue. Overfitting was mostly resolved
+					by monitoring the training and validation losses, as well as using more blurred, shifted, and rotating images. The goal was to train the neural network to understand the factors which differentiated a Q from an O, rather than just having it match pixels.
+					I ended up using a modification of this architecture for our final competition CNN, where I adjusted the image input sizing and training set. 
 				</p>
 				<div class="box alt">
 					<div class="row gtr-uniform">
@@ -125,6 +118,23 @@
 						</div>
 					</div>
 				</div>
+				<h3>Machine Learning Exercises</h3>
+				<p>
+					The last few labs we worked on were machine learning activities where we used Q learning to train a couple of models to control robots simulated in ROS. Q-learning is a machine learning technique which uses the random actions and a reward system which you may have heard about before. 
+					The model trains by taking random actions and receiving positive or negative rewards based on the outcome of the random actions. As training progresses, we hope that the model learns to prefer certain actions based on rewards given in previous states, and adjusts the Q-values appropriately. Over time, the
+					training model will take fewer random actions and more actions determined by the tuned Q values. 
+					<br /><br />
+					The first lab was focused around taking a robot around a track (Monza in this case). To find the state, the camera frame was partitioned into 10 vertical segments and the centroid of the path was found using edge detection techniques. By assigning the centroid to a vertical segment, we 
+					could provide the model with the state. The reward system was also quite simple, the robot received a better reward for keeping the centroid in the centre of the frame, and a worse reward if the centroid was further from the centre after an action. Finally, we started a new training run
+					after the path went out of frame for over 3 seconds. Everytime a training run reached a high score by staying on the track longer, the Q-values of that run were copied for all future runs. In the screenshot of training below, the episode counter is quite high cause I forgot to save the
+					best Q-values after each best run. Alas, we can still see the reward increasing as the model learns parts of the track, then plateauing again as it learns new portions, and so on. 
+					<div class="image fit"><img src="../images/353_qlearn1.png" alt="The machine is learning!" /><Figcaption>Setup showing the track and the reward values.</Figcaption></div>
+					<br /><br />
+					The second lab was the <link /><a href="https://www.tensorflow.org/tutorials/reinforcement_learning/actor_critic" target="_blank">classic cartpole reinforcement learning exercise</a> with a few additions for faster training. A cartpole is simply an vertical pole pinned to a cart on a track. 
+					Initially the system is at perfect equilibrium, so the pole stays upright. However, as the cart moves, the pole will tip over so the goal of the model is to keep the cartpole object on the finite track without the pole tipping past a certain angle. In our environment, 
+					we gave the model two actions: movement to the left or right, along with the position, velocity, and angle of the pole from the vertical for the state. We chose to just give the model a reward for every second it stayed upright on the track, and ended the training run whenever the system
+					went off the end of the track or the pole came more than 20 degrees from the vertical. I also chose to train the model in batches, taking only the top 30% of each batch to train the model off of. 
+				</p>
 			</div>
 		</div>
 
