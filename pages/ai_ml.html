@@ -50,7 +50,6 @@
 		<div id="main">
 			<div class="inner">
 				<h1>ENPH353 Autonomous Detective Project</h1>
-				<p style="color:red;"><b>Note: This page is in progress as I continue through the course.</b></p>
 				<p>
 					This page documents my journey and learning through ENPH353, a project course where we learn about computer vision, image matching algorithms, neural networks, and reinforcement learning with the goal of
 					programming a simulated autonomous detective to see a simulated environment and perform various tasks to solve a mystery. Oh, it's a competition too. We have to complete as many tasks as quickly as possible
@@ -66,7 +65,7 @@
 					The first 10 weeks of the course were based around learning about various machine learning and artificial intelligence concepts through separate labs. All of these concepts would end up being useful for our final competition. 
 				<h3>Computer Vision</h3>
 				<p>
-					<div class="image right"><img src="../images/opencv_frame.png" alt="processed frame" /><figcaption>A frame processed by the code </figcaption></div>
+					<div class="image right"><img src="../images/ai_ml/opencv_frame.png" alt="processed frame" /><figcaption>A frame processed by the code </figcaption></div>
 					The first lab was spent reading about OpenCV, writing some skeleton code based on a given example, then fixing it to draw a circle on the path in each frame. The algorithm is relatively simple once I found out
 					the functions I needed to implement it: downscale the image to speed up the processing, convert the image to grayscale and blur it, then find the edges. Then we can find the center of the two edges, which should be the center of the path and draw a circle on it.
 					By processing each frame of the given video and saving it to a new video, we got this. Note that when there are no edges detected, the center defaults to the bottom left corner. I fixed it before the next lab to be
@@ -100,19 +99,19 @@
 					<div class="row gtr-uniform">
 						<div class="col-4">
 							<span class="image fit">
-								<img src="../images/353_cnn_model.png" alt="My model's specifications" />
+								<img src="../images/ai_ml/353_cnn_model.png" alt="My model's specifications" />
 								<figcaption> CNN Model Specifications </figcaption>
 							</span>
 						</div>
 						<div class="col-4">
 							<span class="image fit">
-								<img src="../images/353_cnn_example.png" alt="Predicting '8'" />
+								<img src="../images/ai_ml/353_cnn_example.png" alt="Predicting '8'" />
 								<figcaption>CNN Prediction</figcaption>
 							</span>
 						</div>
 						<div class="col-4">
 							<span class="image fit">
-								<img src="../images/353_confusion_matrix.png" alt="Heatmap" />
+								<img src="../images/ai_ml/353_confusion_matrix.png" alt="Heatmap" />
 								<figcaption> Confusion matrix showing prediction accuracy </figcaption>
 							</span>
 						</div>
@@ -124,16 +123,75 @@
 					The model trains by taking random actions and receiving positive or negative rewards based on the outcome of the random actions. As training progresses, we hope that the model learns to prefer certain actions based on rewards given in previous states, and adjusts the Q-values appropriately. Over time, the
 					training model will take fewer random actions and more actions determined by the tuned Q values. 
 					<br /><br />
-					The first lab was focused around taking a robot around a track (Monza in this case). To find the state, the camera frame was partitioned into 10 vertical segments and the centroid of the path was found using edge detection techniques. By assigning the centroid to a vertical segment, we 
+					One was focused around taking a robot around a track (Monza in this case). To find the state, the camera frame was partitioned into 10 vertical segments and the centroid of the path was found using edge detection techniques. By assigning the centroid to a vertical segment, we 
 					could provide the model with the state. The reward system was also quite simple, the robot received a better reward for keeping the centroid in the centre of the frame, and a worse reward if the centroid was further from the centre after an action. Finally, we started a new training run
 					after the path went out of frame for over 3 seconds. Everytime a training run reached a high score by staying on the track longer, the Q-values of that run were copied for all future runs. In the screenshot of training below, the episode counter is quite high cause I forgot to save the
 					best Q-values after each best run. Alas, we can still see the reward increasing as the model learns parts of the track, then plateauing again as it learns new portions, and so on. 
-					<div class="image fit"><img src="../images/353_qlearn1.png" alt="The machine is learning!" /><Figcaption>Setup showing the track and the reward values.</Figcaption></div>
-					<br /><br />
-					The second lab was the <link /><a href="https://www.tensorflow.org/tutorials/reinforcement_learning/actor_critic" target="_blank">classic cartpole reinforcement learning exercise</a> with a few additions for faster training. A cartpole is simply an vertical pole pinned to a cart on a track. 
-					Initially the system is at perfect equilibrium, so the pole stays upright. However, as the cart moves, the pole will tip over so the goal of the model is to keep the cartpole object on the finite track without the pole tipping past a certain angle. In our environment, 
-					we gave the model two actions: movement to the left or right, along with the position, velocity, and angle of the pole from the vertical for the state. We chose to just give the model a reward for every second it stayed upright on the track, and ended the training run whenever the system
-					went off the end of the track or the pole came more than 20 degrees from the vertical. I also chose to train the model in batches, taking only the top 30% of each batch to train the model off of. 
+					<div class="image fit"><img src="../images/ai_ml/353_qlearn1.png" alt="The machine is learning!" /><Figcaption>Setup showing the track and the reward values.</Figcaption></div>
+				</p>
+				<h2> The Project </h2>
+				<p>
+					<div class="image right"><img src="../images/ai_ml/competition_surface.png" alt="Virtual competition surface with a paved and grass road" /><figcaption>The Competition Course</figcaption></div>
+					The premise of the project was simple: all ENPH353 students were tasked with designing a control system for a virtual robot capable of following a virtual course, while picking up clues by reading them off blue clueboards along the way. Scattered across the course were hazards
+					including a pedestrian crossing, another vehicle, grass, and a mountain where the final clueboard was. Teams would score points for correctly reading the clues off clueboards, as well as reaching the tunnel on the map which can be reached by following a short green backwards-speaking guide. 
+				</p>
+				<h3>Clue Detection and Processing</h3>
+				<p> 
+					The project was pretty daunting, so we split it into two parts which each partner took the lead on. The first was a clueboard detection portion managed by my partner Daniel, so since I only helped here and there with this portion it is pretty brief. We used a CNN and computer vision techniques to detect and read the cluewords,
+				    which would be combined with a driving component which would follow the roads while avoiding obstacles. For the first task, we started with a simple mask on the camera feed to look for large blue contours by area to ensure we got a good frame featuring clueboard.
+					Since the robot would not always travel directly at the clueboard and would likely capture the image at an angle on the side of the frame, we applied perspective transforms and warps then converted the frames to black and white. 
+					Finally, the letters were extracted based on the dimensions of the image and fed to the CNN. Some screenshots of the early testing for this process is below. 
+					<div class="box alt">
+						<div class="row gtr-uniform">
+							<div class="col-6">
+								<span class="image fit">
+									<img src="../images/ai_ml/clueboard_detect.png" alt="Frame showing an outlined clueboard (and a few other elements...)" />
+									<figcaption> Clueboard is highlighted, but still needs some tuning </figcaption>
+								</span>
+							</div>
+							<div class="col-6">
+								<span class="image fit">
+									<img src="../images/ai_ml/bw_clueboard.png" alt="Screenshot of partially processed clueboard" />
+									<figcaption>After a few rounds of processing </figcaption>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="image fit"><img src="../images/ai_ml/perspective_transform.png" alt="Example of perspective transform showing an angled frame and a transformed frame" /><Figcaption>Example of perspective transform</Figcaption></div>
+					<div class="image right"><img src="../images/ai_ml/353failedrun2.png" alt="Photo of an incorrect prediction by the CNN" /><figcaption>Me when the username Thanos is taken</figcaption></div>
+					Next, we had to convert the images of letters into ASCII characters using a neural network. We started by generating thousands of different white letters on a black background with randomly varying skews, shifts, and brightness changes to train on. 
+					After small modifications to the model from our lab, we trained multiple different CNNs using this data using Google Colab's compute resources and got a few decent models. After testing 7 different variants with actual data gathered by the camera feed, 
+					we settled on a model that mostly had issues differentating between 0, O, and Q. <br> 
+					The final part of this process was making sure that all of the signs were read during the driving process as well as sending the predicted word to the score tracking client. The GUI of the score tracker is shown, where we can see that the model was almost correct. <br><br><br>
+				</p>
+				<h3>Driving Controller</h3>
+				<p> 
+					I led the work centred around driving the robot around the course. Since we knew about the course details from the beginning of the course and the only thing that changed from run to run was clueboard contents, I chose to take a states-based approach to the controller to simplify the task.
+					The controller consisted of a few states for different portions of the track, and states were switched by counting clueboards and pink lines around the track. A visual representation of our controller is below. 
+					<div class="image fit"><img src="../images/ai_ml/state_machine.png" alt="Diagram of the state machine" /><figcaption></figcaption></div>
+					Our robot used PID to navigate through most of the course. For the road portion of the course, we employed a simple HSV mask on the bottom half of the camera image to mask the grey road. we assumed that the road would be the largest contour, and found the centre of that contour. Using this location, we would find the error between the road centre and the centre of the frame and have the robot turn towards the centre if the error was large enough. Below a certain error, the robot would continue to move straight forward to keep the camera more stable for clueboard detection.
+					<br><br>
+					There were some issues with the roundabout entrance where the robot would follow the road all the way to the centre of the roundabout, spin 180 degrees, and follow the road back to the start. Since the road is really wide at the entrance of the roundabout, the solution was to force the robot to turn to the left when the area of the road of the contour was above a threshold. A left turn was chosen so the robot would not have to perform collision detection and avoidance with the truck head-on. This approach also worked for exiting the roundabout since the road area is large there as well. 
+					<br><br><div class="image fit"><img src="../images/ai_ml/roundabout.png" alt="Course competition surface" /><figcaption>Entrances and exits to the roundabout are boxed in red</figcaption></div>
+					The grass following was more difficult to employ the HSV mask for. Other techniques such as edge detection were tried, but we concluded that the HSV mask technique on the white lines had the most potential. The final solution was to mask the white lines, filter out the noise by only taking the n largest contours, then dilate these contours to create solid lines on each side of the path. From these two contours, the average of the two centroids in the horizontal direction gave us the centre of the path, and the robot followed  that centroid using PID control techniques. 
+					<br><br><div class="image right"><img src="../images/ai_ml/yoda_contour2.png" alt="Contour of the Yoda object" /><figcaption>Contour of the Yoda object meant to guide the robot to the tunnel</figcaption></div>
+					To follow Yoda, we had the robot follow the grass path until it detected a pink line, then switch to drive towards the pink line using an HSV mask and PID. At this point, we used our Yoda detection function which employed another HSV mask on the brown of Yoda’s robe to find Yoda as a contour as seen in the figure on the right. This function recorded the largest seen Yoda contour area as well as the current size of the Yoda contour. When the current contour area became significantly smaller (-10% was our choice) than the largest contour area and the largest contour area was above a threshold, it meant Yoda was going away from the robot. At this point, we used PID to follow the Yoda contour centroid while looking for pink lines. When a pink line was detected, the robot would drive towards that instead.  
+					<br><br><br><br><br>
+					The rest of the course utilised tools which were previously mentioned. The tunnel lineup used the grass following functionality with no forward velocity to line the robot up with the tunnel using the two white lines on the sides. After the lineup, the robot would move forward in a straight line, then employ the grass following to reach the top of the mountain. At the top, a HSV mask was used to detect the dark-blue clueboard and then drive towards it to get a clear reading. 
+				</p>
+				<h3>Object and Collision Detection</h3>
+				<p>
+					To avoid collision with the pedestrian, we HSV masked the red-line in front of the pedestrian and stopped  the robot when the contour area was large. At this point, we masked the blue jeans of the pedestrian and would proceed through the crosswalk moments after the pedestrian was in the middle of the crosswalk. This avoided any issues with the pedestrian colliding with the side of the robot. 
+					<br><br>
+					The truck detection was done in a similar fashion. We would HSV mask the truck while the robot was in the roundabout state, and the controller would stop the robot when the contour area became too large. Since we chose a speed which was faster than the truck, we did not have to implement anything to avoid being rear ended by the truck. Our approach for Yoda was the same, just using a different mask and area threshold. 
+				</p>
+				<h3>Performance</h3>
+				<p>
+					Our robot ended up scoring 43 out of 57 possible points during the 4 minute time limit. The breakdown of these 43 points is 38 points from reading clueboards and 5 points for reaching the tunnel without the use of teleports. We got an incorrect CNN clueboard reading which lost us 6 points, and lost 8 points for not reaching the 8th clueboard after we got stuck on the hill. During test runs, we found that the CNN would occasionally misread letters or misalign itself with the tunnel. Fortunately we avoided the latter, but did confuse an O with a Q during the competition. The robot getting stuck on the mountain’s edge was not something we encountered during testing. 
+				</p>
+				<h3>Reflection</h3>
+				<p>
+					Overall, we are quite happy with how the competition went. Although our robot got unfortunately stuck near the top of the hill, that was alright with us. We could not get a perfect run with good consistency, so getting full points in the competition would require some luck anyways. One small regret is that we likely would have learned a lot more about machine learning had we used imitation learning or some other machine learning to teach the robot to drive. However, we still wanted to see some success in the competition so we decided to use what we were familiar with: PID. If we were to redo the competition, attempting machine learning applications to teach our robot to drive would be more rewarding. 
 				</p>
 			</div>
 		</div>
